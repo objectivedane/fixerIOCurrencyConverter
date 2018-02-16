@@ -1,0 +1,5 @@
+FROM php:7.2-apache
+
+RUN apt-get update && apt-get install nano
+RUN a2enmod rewrite
+RUN echo "<Directory /var/www/html>\nAllowOverride All\nRequire all granted\n</Directory>" >> /etc/apache2/apache2.conf

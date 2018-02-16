@@ -1,0 +1,19 @@
+version: '3'
+services:
+  curr:
+    build:
+      context: ./
+      dockerfile: DockerFile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+    network_mode: "bridge"
+  composer:
+    restart: 'no'
+    image: composer
+    command: install
+    volumes:
+      - ./:/app
+
+

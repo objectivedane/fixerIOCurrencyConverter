@@ -1,0 +1,23 @@
+{
+  "name": "base2/currencyconverter",
+  "description": "Currency converter with live xchange rates",
+  "version": "0.0.1",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Dane Stevens",
+      "email": "mail@danestevens.net"
+    }
+  ],
+  "require": {
+    "guzzlehttp/guzzle": "6.3.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "7.0.1"
+  },
+  "autoload": {
+    "psr-4": {"BaseTwo\\": "src/"}
+  }
+
+}
