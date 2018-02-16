@@ -33,10 +33,12 @@ class ApiWorker
 
         $promise->then(function(Response $response) use ($promise) {
             //All good
+            log_message('info', 'Fixer was called and responded');
              $promise->resolve($response);
 
         }, function (RequestException $reason) use ($promise) {
             //Not good
+            log_message('error', 'Fixer was called and FAILED: ' . $reason->getMessage());
             throw $reason;
         });
 
