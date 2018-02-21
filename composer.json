@@ -1,7 +1,7 @@
 {
   "name": "base2/currencyconverter",
   "description": "Currency converter with live xchange rates",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "minimum-stability": "stable",
   "license": "proprietary",
   "authors": [

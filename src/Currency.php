@@ -53,8 +53,9 @@ class Currency
         }
 
         // If there is no data in the cache, or it is older than a day attempt to get fresh rates and update the cache.
-        if ( ! $this->getLastUpdateTime() || $this->getLastUpdateTime() != date('Y-m-d')) {
-            if(! $this->getLastUpdateTime() ) {
+        if ( $this->getLastUpdateTime() === false || $this->hasExpired( $this->getLastUpdateTime(), 2 ) ) {
+
+            if( $this->updateRate() === false ) {
                 log_message('error', 'Could not get rates, and none exist in the cache.  Forex is unavailable. Currency->convertFromTo().');
                 return false;
             }
@@ -92,14 +93,32 @@ class Currency
         }
     }
 
+    private function hasExpired(\DateTime $dateTime, int $expiryDays) {
+        $today = new \DateTime();
+        $difference = $dateTime->diff($today);
+        $daysDiff = intval( $difference->format('%d') );
+
+        if( $daysDiff > $expiryDays ) {
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Get the last updated entry date from the cache
      * @return bool|mixed
      */
-    public function getLastUpdateTime() {
+    public function getLastUpdateTime( $asString = false ) {
         try {
-            return $this->localWorker->getUpdateDate();
+
+            $dateString = $this->localWorker->getUpdateDate();
+
+            if( $asString ) {
+                return $dateString;
+            }
+
+            return new \DateTime($dateString);
+
         } catch (\Exception $e) {
             log_message('debug', $e->getMessage());
             return false;
@@ -111,14 +130,14 @@ class Currency
      * Updates the cache with new rates.
      * @return bool
      */
-    public function updateRate() {
+    private function updateRate() {
 
         try {
             $rateArrayFromApi = json_decode( ApiWorker::getXRates(), true );
 
             $localWorker = $this->localWorker;
             foreach( $rateArrayFromApi['rates'] as $code => $rate) {
-                $localWorker->setRate($rate, $code);
+                $localWorker->setRate($code, $rate);
             }
             $localWorker->setBase( $rateArrayFromApi['base'] );
             $localWorker->setUpdateDate( $rateArrayFromApi['date'] );

@@ -25,10 +25,17 @@ class ApiWorker
      * Returns JSON response which we eventually decode to an assoc array.  So if you need to change this API it must still give us ['date','rates','base']
      * @return ResponseInterface
      * @throws RequestException
+     * @param $testGuzzle mixed Mock test class
      */
-    static function getXRates() {
+    static function getXRates( $testGuzzle = false ) {
 
-        $guzzle = new \GuzzleHttp\Client();
+        // if testGuzzle is given as an argument then use it instead of guzzle
+        if( $testGuzzle !== false ) {
+            $guzzle = $testGuzzle;
+        } else {
+            $guzzle = new \GuzzleHttp\Client();
+        }
+
         $promise = $guzzle->requestAsync('GET', self::API_URL, ['connect_timeout' => 3]);
 
         $promise->then(function(Response $response) use ($promise) {
